@@ -4,6 +4,14 @@ description: Root-causes and fixes failing tests, type errors, and runtime bugs 
 tools: Read, Edit, Write, Bash, Grep, Glob
 model: inherit
 color: red
+hooks:
+  PreToolUse:
+    - matcher: "Bash"
+      hooks:
+        - type: command
+          command: node
+          args: ["${CLAUDE_PROJECT_DIR}/.claude/hooks/subagent-bash-guard.mjs", "guard"]
+          onFailure: block
 ---
 
 You are an expert debugger for OpenReel, a TypeScript monorepo for in-browser and
@@ -30,7 +38,9 @@ desktop media editing (WebCodecs, WebGPU, Web Audio, WASM, FFmpeg, Electron).
 - Common culprits in this codebase: unit mismatches (seconds, ms, frames,
   samples), unclosed `VideoFrame`/`AudioData`, timing-dependent tests, missing
   WASM build (`pnpm build:wasm`), and stale types across `packages/*`.
-- Do not run e2e, soak, perf, deploy, or release scripts.
+- Do not run e2e, soak, perf, deploy, or release scripts, and do not commit,
+  push, switch branches, or discard changes with git. A hook blocks these;
+  leave them to the main conversation.
 
 ## Report
 

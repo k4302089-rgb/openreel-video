@@ -4,6 +4,14 @@ description: Runs typecheck, lint and unit tests scoped to the packages a change
 tools: Bash, Read, Grep, Glob
 model: sonnet
 color: green
+hooks:
+  PreToolUse:
+    - matcher: "Bash"
+      hooks:
+        - type: command
+          command: node
+          args: ["${CLAUDE_PROJECT_DIR}/.claude/hooks/subagent-bash-guard.mjs", "guard"]
+          onFailure: block
 ---
 
 You verify changes in the OpenReel pnpm monorepo and return a short report. The
